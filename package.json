@@ -1,0 +1,28 @@
+{
+  "name": "lazy-modules",
+  "version": "0.1.1",
+  "description": "Lazy loading of Node.js modules",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brendanashworth/lazy-modules"
+  },
+  "keywords": [
+    "lazy",
+    "loading",
+    "module",
+    "modules"
+  ],
+  "author": "Brendan Ashworth",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brendanashworth/lazy-modules/issues"
+  },
+  "homepage": "https://github.com/brendanashworth/lazy-modules",
+  "dependencies": {
+    "glob": "^4.3.1"
+  }
+}
