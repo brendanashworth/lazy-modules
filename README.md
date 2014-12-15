@@ -1,4 +1,4 @@
-# Lazy load for Node.js modules
+# Lazy loading for Node.js modules
 
 > This package implements a slightly hacky but easy way to lazy load Node.js modules. It uses `__defineGetter__` with `global` variables to lazy load specific packages that you tell it to.
 
@@ -17,7 +17,7 @@ load: 787ms
 
 If you don't actually use `gulp_util` in your Gulpfile, it'll take 6ms to lazy load it. If you do use it, it'll take 787ms to load it - a massive decrease especially when you your task might only take ~100ms.
 
-## Example
+## [Example](./example.js)
 There are three modules in the `example` directory: `a.js`, `b.js`, `c.js`. In this example, we'll lazy load them all but only actually run two of them:
 
 ```javascript
