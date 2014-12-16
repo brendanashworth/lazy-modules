@@ -7,7 +7,7 @@ module.exports = function(dir) {
 
 	// for every file, we go
 	files.forEach(function(exactFilename) {
-		var basename = path.basename(exactFilename);
+		var basename = path.basename(exactFilename, '.js'); // supply .js to remove it from name
 		var exact = path.resolve(exactFilename);
 
 		// replace dashes with underscores
