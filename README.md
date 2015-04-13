@@ -6,7 +6,8 @@
 v8's `Script::Compile`, called when `require()` is used, usually takes a relatively long time. Multiply this by the 20 packages your `Gulpfile.js` imports, times the 10 each of those imports, times 5... you get the point. Just running a linter forces v8 to compile everything, sometimes taking ~5 seconds or worse. If you're impatient like me, this is perfect for you.
 
 This is the time it takes to load and not use vs lazy-load [gulpjs/gulp-util](https://github.com/gulpjs/gulp-util):
-```
+
+```javascript
 > var lazy = require('lazy-modules');
 > console.time('lazy-load'); lazy('node_modules/gulp-util'); console.timeEnd('lazy-load');
 lazy-load: 6ms
