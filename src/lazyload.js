@@ -2,7 +2,13 @@
 var glob = require('glob');
 var path = require('path');
 
-module.exports = function(dir) {
+function lazyload(dir) {
+	// handle when an array is passed (array of globs)
+	if (Array.isArray(dir)) {
+		dir.forEach(lazyload);
+		return;
+	}
+
 	var files = glob.sync(dir);
 
 	// for every file, we go
@@ -19,3 +25,5 @@ module.exports = function(dir) {
 		});
 	});
 };
+
+module.exports = lazyload;
