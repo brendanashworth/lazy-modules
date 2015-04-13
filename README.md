@@ -1,16 +1,15 @@
-# Lazy loading for Node.js modules
+# lazy-modules [![Build Status](https://travis-ci.org/brendanashworth/lazy-modules.svg)](https://travis-ci.org/brendanashworth/lazy-modules)
 
-> This package implements a slightly hacky but easy way to lazy load Node.js modules. It uses `__defineGetter__` with `global` variables to lazy load specific packages that you tell it to.
+> lazy-modules implements an easy way to bulk lazy-load Node.js/io.js modules, perfect for implementing in a build system with many imports such as [gulp](http://gulpjs.com/) or [grunt](http://gruntjs.com/).
 
 ## Why?
-lazy-modules was designed especially for Gulp; in standard Gulpfiles, imports are stated at the top of the Gulpfile and *every single* import is loaded even when you do one of the smaller tasks. lazy-modules fixes this by lazy loading the specified modules and dynamically loading them when you use them, decreasing the time spent running.
+v8's `Script::Compile`, called when `require()` is used, usually takes a relatively long time. Multiply this by the 20 packages your `Gulpfile.js` imports, times the 10 each of those imports, times 5... you get the point. Just running a linter forces v8 to compile everything, sometimes taking ~5 seconds or worse. If you're impatient like me, this is perfect for you.
 
-Yes, I know that it uses horrible practices (`global`) and deprecated Object properties (`__defineGetter__`). I wrote this because it can speed up Gulpfiles so much, as shown in this REPL example:
-
+This is the time it takes to load and not use vs lazy-load [gulpjs/gulp-util](https://github.com/gulpjs/gulp-util):
 ```
-> var lazy = require('./');
-> console.time('no-load'); lazy('./node_modules/*'); console.timeEnd('no-load');
-no-load: 6ms
+> var lazy = require('lazy-modules');
+> console.time('lazy-load'); lazy('node_modules/gulp-util'); console.timeEnd('lazy-load');
+lazy-load: 6ms
 > console.time('load'); gulp_util; console.timeEnd('load');
 load: 787ms
 ```
@@ -19,11 +18,11 @@ If you don't actually use `gulp_util` in your Gulpfile, it'll take 6ms to lazy l
 
 ## Install
 ```sh
-$ npm install lazy-modules --save
+$ npm i lazy-modules --save
 ```
 
-## [Example](./example.js)
-There are three modules in the `example` directory: `a.js`, `b.js`, `c.js`. In this example, we'll lazy load them all but only actually run two of them:
+## Example
+There are three modules in the [`example`](./example) directory: `a.js`, `b.js`, `c.js`. In this example, we'll lazy load them all but only actually run two of them:
 
 ```javascript
 var lazy = require('lazy-modules');
@@ -47,11 +46,10 @@ gulp_util.log('gulp-util was lazily loaded!');
 
 ## API
 ### `lazy(glob)`
-This function is ran to bind all modules that match the given [glob](https://github.com/isaacs/node-glob) via `__defineGetter__` to `global`.
 
-## Todo
-- [ ] If no glob is passed, lazy load *all* available modules
-- [ ] Better documentation
+- `glob`: either a `String` or `Array`
+
+When a string is passed, all modules will be lazy-loaded that match the given [glob](https://github.com/isaacs/node-glob). If `glob` is an Array, they will be mapped over the `lazy` function individually.
 
 ## License
 [MIT license](./LICENSE)
