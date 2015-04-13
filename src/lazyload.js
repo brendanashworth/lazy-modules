@@ -1,4 +1,5 @@
-// lazy load the entire path
+'use strict';
+
 var glob = require('glob');
 var path = require('path');
 
@@ -7,6 +8,8 @@ function lazyload(dir) {
 	if (Array.isArray(dir)) {
 		dir.forEach(lazyload);
 		return;
+	} else if (typeof dir !== 'string') {
+		throw new TypeError('argument to lazyload must be either string or Array');
 	}
 
 	var files = glob.sync(dir);
@@ -14,14 +17,16 @@ function lazyload(dir) {
 	// for every file, we go
 	files.forEach(function(exactFilename) {
 		var basename = path.basename(exactFilename, '.js'); // supply .js to remove it from name
-		var exact = path.resolve(exactFilename);
 
 		// replace dashes with underscores
 		basename = basename.replace(/-/g, '_');
 
-		// deprecated magic + global variables = horrific yet helpful madness
-		global.__defineGetter__(basename, function() {
-			return require(exact);
+		Object.defineProperty(global, basename, {
+			configurable: true,
+			get: function() {
+				var filename = path.resolve(process.cwd(), exactFilename);
+				return require(filename);
+			}
 		});
 	});
 };
